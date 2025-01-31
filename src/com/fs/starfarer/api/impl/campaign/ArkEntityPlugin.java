@@ -35,18 +35,10 @@ public class ArkEntityPlugin extends BaseCustomEntityPlugin {
 
             engineGlow = new CampaignEngineGlowUtil(entity, fringe, core, flame, 0.25f);
             CampaignEngineGlowIndividualEngine engine = new CampaignEngineGlowIndividualEngine(
-                    90f, 100f, 30f, 100f, new Vector2f(-195, 0f), engineGlow);
-            engine.setFlameTexSpanMult(0.5f);
-            CampaignEngineGlowIndividualEngine engine2 = new CampaignEngineGlowIndividualEngine(
-                    90f, 40, 20f, 100f, new Vector2f(-193, 26f), engineGlow);
-            engine.setFlameTexSpanMult(0.5f);
-            CampaignEngineGlowIndividualEngine engine3 = new CampaignEngineGlowIndividualEngine(
-                    90f, 40, 20f, 100f, new Vector2f(-187, -23f), engineGlow);
+                    90f, 300f, 30f, 100f, new Vector2f(-115, -2f), engineGlow);
             engine.setFlameTexSpanMult(0.5f);
 
             engineGlow.addEngine(engine);
-            engineGlow.addEngine(engine2);
-            engineGlow.addEngine(engine3);
 
         }
 

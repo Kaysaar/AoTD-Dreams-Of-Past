@@ -3,8 +3,6 @@ package data.scripts.industry;
 import com.fs.starfarer.api.impl.campaign.econ.impl.BaseIndustry;
 import com.fs.starfarer.api.impl.campaign.ids.*;
 import data.Ids.AodCryosleeperConditions;
-import org.magiclib.util.MagicSettings;
-
 public class KaysaarCryoHarvester extends BaseIndustry {
 
     public int BONUS =3;

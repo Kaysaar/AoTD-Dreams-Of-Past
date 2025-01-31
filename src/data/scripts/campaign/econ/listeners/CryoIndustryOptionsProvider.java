@@ -14,6 +14,7 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import data.plugins.AodCryosleeperPLugin;
+import data.scripts.events.AwakeningEventPlugin;
 import data.scripts.industry.ReawakeningFacility;
 
 import java.awt.*;
@@ -34,17 +35,23 @@ public class CryoIndustryOptionsProvider extends BaseIndustryOptionProvider {
                 if (entity.getMemory().is("$reawakening", true)) continue;
                 if(entity.getMemory().is("$inTransit",true))continue;
                 if (entity.getMemory().is("$defenderFleetDefeated", true)) {
-                    if (entity.getCustomEntityType().equals("ark") && !foundArk) {
+                    if (entity.getCustomEntityType().equals("ark") && !foundArk&&ind.getMarket().getSize()<=7) {
                         IndustryOptionData opt;
                         opt = new IndustryOptionData("Start re-awakening process of Ark", ARK, ind, this);
                         opt.color = new Color(0, 144, 246, 255);
+                        if(ind.getMarket().getSize()>=8){
+                            opt.enabled = false;
+                        }
                         data.add(opt);
                         foundArk = true;
                     }
-                    if (entity.getCustomEntityType().equals("derelict_cryosleeper") && !foundCryosleeper) {
+                    if (entity.getCustomEntityType().equals("derelict_cryosleeper") && !foundCryosleeper&&ind.getMarket().getSize()<=6) {
                         IndustryOptionData opt;
                         opt = new IndustryOptionData("Start re-awakening process of Cryosleeper", CRYOSLEEPER, ind, this);
                         opt.color = new Color(0, 98, 246, 255);
+                        if(ind.getMarket().getSize()>=7){
+                            opt.enabled = false;
+                        }
                         data.add(opt);
                         foundCryosleeper = true;
                     }
@@ -81,7 +88,7 @@ public class CryoIndustryOptionsProvider extends BaseIndustryOptionProvider {
                     if (opt.id == CRYOSLEEPER) {
                         days = (int) AodCryosleeperPLugin.AwakeningCryosleeper;
                     }
-                    info.addPara("Reawakening process will take %s days to complete", opad, highlight, "" + days);
+                    info.addPara("Reawakening process will commence and can't be stopped. Are you sure you want to proceed?", opad, highlight, "" + days);
 
 
                     panel.addUIElement(info).inTL(0, 0);
@@ -98,11 +105,11 @@ public class CryoIndustryOptionsProvider extends BaseIndustryOptionProvider {
                         if (entity.getMemory().is("$reawakening", true)) continue;
                         if (entity.getMemory().is("$defenderFleetDefeated", true)) {
                             if (entity.getCustomEntityType().equals("ark") && opt.id == ARK) {
-                                initalizeAwakening(entity, (ReawakeningFacility) industry, AodCryosleeperPLugin.AwakeningArk);
+                                initalizeAwakening(entity, (ReawakeningFacility) industry, AwakeningEventPlugin.AwakeningType.ARK);
                                 break;
                             }
                             if (entity.getCustomEntityType().equals("derelict_cryosleeper") && opt.id == CRYOSLEEPER) {
-                                initalizeAwakening(entity, (ReawakeningFacility) industry, AodCryosleeperPLugin.AwakeningCryosleeper);
+                                initalizeAwakening(entity, (ReawakeningFacility) industry, AwakeningEventPlugin.AwakeningType.CRYOSLEEPER);
                                 break;
                             }
                         }
@@ -119,16 +126,11 @@ public class CryoIndustryOptionsProvider extends BaseIndustryOptionProvider {
         }
     }
 
-    private void initalizeAwakening(final SectorEntityToken entity, final ReawakeningFacility industry, final float awakeningTime) {
+    private void initalizeAwakening(final SectorEntityToken entity, final ReawakeningFacility industry, final AwakeningEventPlugin.AwakeningType awakeningType) {
         entity.getMemoryWithoutUpdate().set("$reawakening", true);
-        industry.tiedEntity = entity;
         industry.setReawakening(true);
-        industry.getSpec().setUpgrade(industry.getId());
-        float prev = industry.getSpec().getBuildTime();
-        industry.getSpec().setBuildTime(awakeningTime);
-        industry.startUpgrading();
-        industry.getSpec().setUpgrade(null);
-        industry.getSpec().setBuildTime(prev);
+        Misc.fadeAndExpire(entity);
+        new AwakeningEventPlugin(industry.getMarket(),awakeningType);
 
 
     }

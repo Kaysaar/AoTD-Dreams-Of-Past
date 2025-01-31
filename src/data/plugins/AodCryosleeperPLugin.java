@@ -7,21 +7,11 @@ import com.fs.starfarer.api.campaign.listeners.ListenerManagerAPI;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
-import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
-import data.Ids.AodCryosleeperConditions;
-import data.Ids.AoDIndustries;
-import com.fs.starfarer.api.campaign.*;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.characters.AbilityPlugin;
-import com.fs.starfarer.api.characters.PersonAPI;
-import com.fs.starfarer.api.combat.EngagementResultAPI;
+import com.fs.starfarer.api.campaign.*;;
 import com.fs.starfarer.api.util.Misc;
-import data.Ids.AodMemFlags;
 import data.scripts.campaign.econ.listeners.CryoIndustryOptionsProvider;
 import lunalib.lunaSettings.LunaSettings;
-import org.magiclib.util.MagicSettings;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,10 +19,6 @@ import java.util.List;
 
 
 public class AodCryosleeperPLugin extends BaseModPlugin {
-    public static int POP_SIZE = org.magiclib.util.MagicSettings.getInteger("Cryo_but_better", "MAX_POP_GROWTH");
-    public int maxTriTachyonElectronics = 2;
-    public static String aodTech = "$Aodtecha";
-    public boolean randomIndustrySpawn = MagicSettings.getBoolean("Cryo_but_better", "RANDOM_SECTOR");
     public static int configSize = Misc.MAX_COLONY_SIZE;
     public static float AwakeningCryosleeper = 180;
     public static float AwakeningArk = 400;
@@ -56,7 +42,6 @@ public class AodCryosleeperPLugin extends BaseModPlugin {
                     ark.getMemoryWithoutUpdate().set(MemFlags.SALVAGE_SEED, seed);
                     ark.getMemoryWithoutUpdate().set(MemFlags.SALVAGE_SPEC_ID_OVERRIDE, "ark");
                     ark.getMemoryWithoutUpdate().set("$hasDefenders", true);
-                    ark.setDiscoverable(true);
                     break;
                 }
             }
@@ -118,7 +103,6 @@ public class AodCryosleeperPLugin extends BaseModPlugin {
 //            stationEntity.setDiscoverable(false);
 //            break;
 //        }
-
-
+//        new AwakeningEventPlugin(Misc.getPlayerMarkets(true).get(0), AwakeningEventPlugin.AwakeningType.CRYOSLEEPER);
     }
 }

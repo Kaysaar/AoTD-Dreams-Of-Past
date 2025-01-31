@@ -275,7 +275,7 @@ public class ArkCMD extends BaseCommandPlugin{
         final ArrayList<SectorEntityToken> systems = new ArrayList<SectorEntityToken>();
         for (StarSystemAPI curr : Global.getSector().getStarSystems()) {
             if (curr == entity.getContainingLocation()) continue;
-            if (curr.hasTag(Tags.THEME_HIDDEN) && !"Limbo".equals(curr.getBaseName())) continue;
+            if ("Limbo".equals(curr.getBaseName()))continue;
             if (curr.isDeepSpace()) continue;
             if (curr.getHyperspaceAnchor() == null) continue;
             if (Misc.getStarSystemForAnchor(curr.getHyperspaceAnchor()) == null) continue;

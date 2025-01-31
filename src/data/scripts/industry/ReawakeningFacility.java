@@ -15,6 +15,11 @@ import com.fs.starfarer.api.util.Misc;
 import data.plugins.AodCryosleeperPLugin;
 
 public class ReawakeningFacility extends BaseIndustry {
+    @Override
+    public boolean showShutDown() {
+        return !isReawakening;
+    }
+
 
     public SectorEntityToken tiedEntity = null;
 
