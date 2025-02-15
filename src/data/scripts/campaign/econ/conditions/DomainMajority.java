@@ -14,6 +14,11 @@ import java.awt.*;
 public class DomainMajority extends BaseMarketConditionPlugin {
     boolean shouldReduceStability = true;
 
+    @Override
+    public boolean isTransient() {
+        return false;
+    }
+
     public void setShouldReduceStability(boolean shouldReduceStability) {
         this.shouldReduceStability = shouldReduceStability;
     }
@@ -30,8 +35,9 @@ public class DomainMajority extends BaseMarketConditionPlugin {
         if(shouldReduceStability){
             market.getStability().modifyFlat("aotd_majority_domain",-market.getSize(),"Domain Majority");
         }
-
-        market.removeCondition(Conditions.LUDDIC_MAJORITY);
+        if(market.hasCondition(Conditions.LUDDIC_MAJORITY)){
+            market.removeCondition(Conditions.LUDDIC_MAJORITY);
+        }
 
 
     }
@@ -56,7 +62,7 @@ public class DomainMajority extends BaseMarketConditionPlugin {
         col[1] = Color.ORANGE;
         tooltip.addPara("%s towards usage of %s", 5f, col,"-1",Global.getSettings().getCommoditySpec(Commodities.DRUGS).getName());
         tooltip.addPara("%s towards production of %s", 5f, col,"+1","all commodities");
-        if(market.getSize()<=6){
+        if(shouldReduceStability){
             tooltip.addPara("Reduction of stability by %s for the duration of awakening procedure",5f,Misc.getNegativeHighlightColor(),""+market.getSize());
         }
     }

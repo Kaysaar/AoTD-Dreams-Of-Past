@@ -3,15 +3,21 @@ package data.plugins;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.listeners.ListenerManagerAPI;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.campaign.*;;
 import com.fs.starfarer.api.util.Misc;
+import data.scripts.campaign.econ.conditions.DomainMajority;
 import data.scripts.campaign.econ.listeners.CryoIndustryOptionsProvider;
+import data.scripts.events.AwakeningEventPlugin;
 import lunalib.lunaSettings.LunaSettings;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,22 +64,33 @@ public class AodCryosleeperPLugin extends BaseModPlugin {
 
     public void onGameLoad(boolean newGame) {
         setListenersIfNeeded();
-        if (Global.getSettings().getModManager().isModEnabled("lunalib")) {
-            if (LunaSettings.getInt("Cryo_but_better", "aotd_ark_awakening_period") != null) {
-                AwakeningArk = LunaSettings.getInt("Cryo_but_better", "aotd_ark_awakening_period");
+        if(Global.getSector().getMemory().is("$aotd_fix_dope",false)){
+            Global.getSector().getMemory().set("$aotd_fix_dope",true);
+            boolean isThereExistingIntel = false;
+            ArrayList<MarketAPI>marketsToReapply = new ArrayList<>();
 
-            }
-            if (LunaSettings.getInt("Cryo_but_better", "aotd_cryosleeper_awakening_period") != null) {
-                AwakeningCryosleeper = LunaSettings.getInt("Cryo_but_better", "aotd_cryosleeper_awakening_period");
-            }
-            if (LunaSettings.getInt("Cryo_but_better", "aotd_ark_awakening_reward") != null) {
-                sizeArk = LunaSettings.getInt("Cryo_but_better", "aotd_ark_awakening_reward");
+            for (IntelInfoPlugin intelInfoPlugin : Global.getSector().getIntelManager().getIntel(AwakeningEventPlugin.class)) {
+                if(intelInfoPlugin instanceof AwakeningEventPlugin){
+                    isThereExistingIntel = true;
+                    marketsToReapply.add(((AwakeningEventPlugin) intelInfoPlugin).tiedMarket);
 
+                }
             }
-            if (LunaSettings.getInt("Cryo_but_better", "aotd_cryosleepe_awakening_reward") != null) {
-                sizeCryosleeper = LunaSettings.getInt("Cryo_but_better", "aotd_cryosleepe_awakening_reward");
+            for (MarketAPI marketAPI : Misc.getPlayerMarkets(true)) {
+
+                if(marketAPI.hasCondition("aotd_domain_majority")){
+                    marketAPI.removeCondition("aotd_domain_majority");
+                    String token = marketAPI.addCondition("aotd_domain_majority");
+                    MarketConditionAPI conditionAPI = marketAPI.getCondition(token);
+                    DomainMajority majority = (DomainMajority) conditionAPI.getPlugin();
+                    if(!marketsToReapply.contains(marketAPI)){
+                        majority.setShouldReduceStability(false);
+                    }
+                    ;
+                }
             }
         }
+
 //        for (PlanetAPI planet : Global.getSector().getPlayerFleet().getStarSystem().getPlanets()) {
 //            if(planet.isStar())continue;
 //            if(planet.isMoon())continue;

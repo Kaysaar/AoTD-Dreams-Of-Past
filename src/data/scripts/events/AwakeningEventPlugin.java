@@ -354,7 +354,7 @@ public class AwakeningEventPlugin extends BaseEventIntel {
             float progres = (float) awakenedSoFar / getPopulationToAwaken();
             setProgress((int) (progres * (float) getMaxProgress()));
         }
-        if(progress>=getMaxProgress()&&!isEnding()&&!isEnded()){
+        if(progress>=getMaxProgress()&&!finishedAwakening){
             finishedAwakening = true;
             tiedMarket.removeIndustry("reawakening_facility", MarketAPI.MarketInteractionMode.REMOTE,false);
             DomainMajority majority = (DomainMajority) tiedMarket.getFirstCondition("aotd_domain_majority").getPlugin();

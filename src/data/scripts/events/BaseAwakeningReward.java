@@ -158,6 +158,7 @@ public class BaseAwakeningReward {
             officer.getStats().setSkillLevel("officer_man_out_of_time",4);
             officer.getStats().setSkillLevel(Skills.TARGET_ANALYSIS,0);
             Global.getSector().getPlayerFleet().getFleetData().addOfficer(officer);
+            response = " New Officer joined our ranks";
 
         }
         if (type == AwakeningEventPlugin.EventType.ADMIN) {
