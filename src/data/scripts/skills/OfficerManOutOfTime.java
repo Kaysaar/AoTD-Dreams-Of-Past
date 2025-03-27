@@ -1,5 +1,6 @@
 package data.scripts.skills;
 
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.*;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
@@ -31,6 +32,7 @@ public class OfficerManOutOfTime {
             info.addPara("When piloting ship belonging to any %s", 0f, hc, "Domain Battlegroup");
             info.addPara("+25% damage against cruisers", hc, 3f);
             info.addPara("+30% damage against capitals", hc, 3f);
+
 
         }
 
@@ -65,6 +67,18 @@ public class OfficerManOutOfTime {
             info.addPara("+20% damage against destroyers", hc, 3f);
             info.addPara("+100% damage against weapons and engines", hc, 3f);
             info.addPara("Piloting any ship, that has not been manufactured by standards of Domain Battlegroups reduces bonuses to %s", 5f, Misc.getNegativeHighlightColor(), "5%");
+            CampaignFleetAPI fleet = stats.getFleet();
+            if(fleet!=null) {
+                for (FleetMemberAPI memberAPI : fleet.getFleetData().getMembersListCopy()) {
+                    if(memberAPI.getCaptain()!=null){
+                        if(memberAPI.getCaptain().getStats().equals(stats)){
+                            if(isBattlegroup(memberAPI.getHullSpec().getManufacturer())){
+                                info.addPara("This vessel meets criteria of Domain Battlegroups !",Misc.getPositiveHighlightColor(),5f);
+                            }
+                        }
+                    }
+                }
+            }
 
         }
 

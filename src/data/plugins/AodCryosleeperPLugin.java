@@ -90,7 +90,7 @@ public class AodCryosleeperPLugin extends BaseModPlugin {
                 }
             }
         }
-
+        Global.getSector().getPlayerPerson().getStats().setSkillLevel("officer_man_out_of_time",5);
 //        for (PlanetAPI planet : Global.getSector().getPlayerFleet().getStarSystem().getPlanets()) {
 //            if(planet.isStar())continue;
 //            if(planet.isMoon())continue;
