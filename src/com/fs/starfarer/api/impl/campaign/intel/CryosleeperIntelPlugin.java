@@ -6,10 +6,8 @@ import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.AoTDCryosleeperEntityPlugin;
 import com.fs.starfarer.api.impl.campaign.ArkEntityPlugin;
-import com.fs.starfarer.api.impl.campaign.ids.Drops;
-import com.fs.starfarer.api.impl.campaign.ids.Entities;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.ids.*;
+import com.fs.starfarer.api.impl.campaign.intel.misc.CryosleeperIntel;
 import com.fs.starfarer.api.impl.campaign.intel.misc.GateHaulerIntel;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.missions.GateHaulerCMD;
@@ -39,7 +37,15 @@ public class CryosleeperIntelPlugin extends BaseIntelPlugin{
         INBOUND,
         DEPLOYING,
     }
-
+    public SectorEntityToken getEntity(){
+        return this.getCryosleeper();
+    }
+    public static CryosleeperIntelPlugin getCryosleeperIntel(SectorEntityToken entity) {
+        for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(CryosleeperIntelPlugin.class)) {
+            if (((CryosleeperIntelPlugin)intel).getEntity() == entity) return (CryosleeperIntelPlugin)intel;
+        }
+        return null;
+    }
     public static CryosleeperIntelPlugin get(SectorEntityToken cryosleeper) {
         for (IntelInfoPlugin p : Global.getSector().getIntelManager().getIntel(CryosleeperIntelPlugin.class)) {
             if (p instanceof CryosleeperIntelPlugin) {
@@ -546,9 +552,8 @@ public class CryosleeperIntelPlugin extends BaseIntelPlugin{
 
         AoTDCryosleeperEntityPlugin plugin = getPlugin();
         if (!plugin.isActivated()) {
-            GateHaulerCMD cmd = new GateHaulerCMD();
             info.addPara("Cryosleeper is dormant, its systems shut down to conserve power.", opad);
-            info.showCost("Resources required to activate:", false, base, dark, opad, cmd.getResources(), cmd.getQuantities());
+            info.showCost("Resources required to activate:", false, base, dark, opad, getResources(), getQuantities());
         } else if (plugin.isActivating()) {
             info.addPara("Cryosleeper is in the process of reactivating its systems and should be operational "
                     + "within a day.", opad);
@@ -585,7 +590,13 @@ public class CryosleeperIntelPlugin extends BaseIntelPlugin{
         //addBulletPoints(info, ListInfoMode.IN_DESC);
 
     }
+    public String [] getResources() {
+        return new String[] {Commodities.RARE_METALS,Commodities.METALS};
+    }
 
+    public int [] getQuantities() {
+        return new int[] {500,1000};
+    }
     @Override
     public String getIcon() {
         return Global.getSettings().getSpriteName("intel", "gate_hauler");

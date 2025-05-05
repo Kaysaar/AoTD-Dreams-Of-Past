@@ -5,10 +5,7 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ArkEntityPlugin;
-import com.fs.starfarer.api.impl.campaign.ids.Drops;
-import com.fs.starfarer.api.impl.campaign.ids.Entities;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.ids.*;
 import com.fs.starfarer.api.impl.campaign.intel.misc.GateHaulerIntel;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.missions.GateHaulerCMD;
@@ -544,10 +541,9 @@ public class ArkIntelPlugin extends BaseIntelPlugin{
         info.addSectionHeading("Status", base, dark, Alignment.MID, opad);
 
         ArkEntityPlugin plugin = getPlugin();
-        if (!plugin.isActivated()) {
-            GateHaulerCMD cmd = new GateHaulerCMD();
+        if (!plugin.isActivated()) {;
             info.addPara("The ark is dormant, its systems shut down to conserve power.", opad);
-            info.showCost("Resources required to activate:", false, base, dark, opad, cmd.getResources(), cmd.getQuantities());
+            info.showCost("Resources required to activate:", false, base, dark, opad, getResources(),getQuantities());
         } else if (plugin.isActivating()) {
             info.addPara("The ark is in the process of reactivating its systems and should be operational "
                     + "within a day.", opad);
@@ -584,7 +580,23 @@ public class ArkIntelPlugin extends BaseIntelPlugin{
         //addBulletPoints(info, ListInfoMode.IN_DESC);
 
     }
+    public String [] getResources() {
+        return new String[] {Commodities.RARE_METALS,Commodities.METALS};
+    }
 
+    public int [] getQuantities() {
+        return new int[] {500,1000};
+    }
+
+    public SectorEntityToken getEntity(){
+        return this.getArk();
+    }
+    public static ArkIntelPlugin getArkIntel(SectorEntityToken entity) {
+        for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(ArkIntelPlugin.class)) {
+            if (((ArkIntelPlugin)intel).getEntity() == entity) return (ArkIntelPlugin)intel;
+        }
+        return null;
+    }
     @Override
     public String getIcon() {
         return Global.getSettings().getSpriteName("intel", "gate_hauler");
